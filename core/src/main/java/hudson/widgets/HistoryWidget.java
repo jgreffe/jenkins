@@ -28,7 +28,7 @@ import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.Functions;
-import hudson.link.LinkProvider;
+import hudson.link.ConsoleURLProvider;
 import hudson.model.Job;
 import hudson.model.ModelObject;
 import hudson.model.Queue;
@@ -107,8 +107,8 @@ public class HistoryWidget<O extends ModelObject, T> extends Widget {
         this.searchString = currentRequest.getParameter("search");
     }
 
-    public String getRedirectURL(Run<?, ?> run) {
-        return LinkProvider.get().getRedirectURL(run);
+    public String getConsoleURL(Run<?, ?> run) {
+        return ConsoleURLProvider.get().getConsoleURL(run);
     }
 
     @Override
