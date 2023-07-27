@@ -28,7 +28,6 @@ import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.Functions;
-import hudson.link.ConsoleURLProvider;
 import hudson.model.Job;
 import hudson.model.ModelObject;
 import hudson.model.Queue;
@@ -105,10 +104,6 @@ public class HistoryWidget<O extends ModelObject, T> extends Widget {
         this.newerThan = getPagingParam(currentRequest, "newer-than");
         this.olderThan = getPagingParam(currentRequest, "older-than");
         this.searchString = currentRequest.getParameter("search");
-    }
-
-    public String getConsoleURL(Run<?, ?> run) {
-        return ConsoleURLProvider.get().getConsoleURL(run);
     }
 
     @Override
