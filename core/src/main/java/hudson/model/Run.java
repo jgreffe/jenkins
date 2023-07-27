@@ -2291,7 +2291,9 @@ public abstract class Run<JobT extends Job<JobT, RunT>, RunT extends Run<JobT, R
     public void doConsole(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {
         String redirectUrl = ConsoleURLProvider.get().getConsoleURL(this);
         String defaultUrl = ConsoleURLProvider.getDefault().getConsoleURL(this);
-        if (defaultUrl.equals(redirectUrl)) {
+        String referer = req.getReferer();
+        String runUrl = this.getAbsoluteUrl();
+        if (defaultUrl.equals(redirectUrl) || referer == null || referer.equals(runUrl)) {
             req.getView(this, "console.jelly").forward(req, rsp);
         } else {
             rsp.sendRedirect(redirectUrl);
