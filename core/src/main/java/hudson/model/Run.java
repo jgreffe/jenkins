@@ -1077,14 +1077,6 @@ public abstract class Run<JobT extends Job<JobT, RunT>, RunT extends Run<JobT, R
     }
 
     /**
-     * Obtains the console URL to this build.
-     * @return String like "job/foo/32/console" by default, or a String declared by an Extension of {@link ConsoleURLProvider}
-     */
-    public final @NonNull String getConsoleUrl() {
-        return ConsoleURLProvider.get().getConsoleURL(this);
-    }
-
-    /**
      * Unique ID of this build.
      * Usually the decimal form of {@link #number}, but may be a formatted timestamp for historical builds.
      */
@@ -2294,6 +2286,16 @@ public abstract class Run<JobT extends Job<JobT, RunT>, RunT extends Run<JobT, R
                 DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, Locale.ENGLISH) :
                 new SimpleDateFormat(format, req.getLocale());
         rsp.getWriter().print(df.format(getTime()));
+    }
+
+    public void doConsole(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {
+        String redirectUrl = ConsoleURLProvider.get().getConsoleURL(this);
+        String defaultUrl = ConsoleURLProvider.getDefault().getConsoleURL(this);
+        if (defaultUrl.equals(redirectUrl)) {
+            req.getView(this, "console.jelly").forward(req, rsp);
+        } else {
+            rsp.sendRedirect(redirectUrl);
+        }
     }
 
     /**

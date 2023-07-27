@@ -20,6 +20,10 @@ public abstract class ConsoleURLProvider implements ExtensionPoint {
         return all().stream().findFirst().orElse(ConsoleURLProviderImpl.INSTANCE);
     }
 
+    public static ConsoleURLProvider getDefault() {
+        return ConsoleURLProviderImpl.INSTANCE;
+    }
+
     static class ConsoleURLProviderImpl extends ConsoleURLProvider {
 
         static final ConsoleURLProvider INSTANCE = new ConsoleURLProviderImpl();
