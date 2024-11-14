@@ -69,7 +69,7 @@ public class UserIdMapper {
     public UserIdMapper() {
     }
 
-    @Initializer(after = InitMilestone.PLUGINS_STARTED, before = InitMilestone.JOB_LOADED)
+    @Initializer(after = InitMilestone.SYSTEM_CONFIG_ADAPTED, before = InitMilestone.JOB_LOADED)
     public File init() throws IOException {
         usersDirectory = createUsersDirectoryAsNeeded();
         load();
