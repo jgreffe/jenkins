@@ -239,7 +239,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -2865,24 +2864,21 @@ public class Jenkins extends AbstractCIBase implements DirectlyModifiableTopLeve
             delta = ExtensionComponentSet.union(delta, ef.refresh().filtered());
         }
 
-        LinkedHashSet<ExtensionList> extensionListsToFireChangeListeners = new LinkedHashSet<>();
-        LinkedHashSet<ExtensionList> descriptorListsToFireListeners = new LinkedHashSet<>();
+        List<ExtensionList> listsToFireOnChangeListeners = new ArrayList<>();
         for (ExtensionList el : extensionLists.values()) {
             if (el.refresh(delta)) {
-                extensionListsToFireChangeListeners.add(el);
+                listsToFireOnChangeListeners.add(el);
             }
         }
         for (ExtensionList el : descriptorLists.values()) {
             if (el.refresh(delta)) {
-                descriptorListsToFireListeners.add(el);
+                listsToFireOnChangeListeners.add(el);
             }
         }
-        // Refresh all extension lists before firing any listeners in case the listener would cause any of the new
-        // extensions to be forcibly loaded prior to the refresh, leading to duplicate entries in the list.
-        for (var el : extensionListsToFireChangeListeners) {
-            el.fireOnChangeListeners();
-        }
-        for (var el : descriptorListsToFireListeners) {
+        // Refresh all extension lists before firing any listeners in case a listener would cause any of the new
+        // extensions to be forcibly loaded prior to their extension lists being refreshed, leading to duplicate
+        // entries for the same extension object in extension lists.
+        for (var el : listsToFireOnChangeListeners) {
             el.fireOnChangeListeners();
         }
 
