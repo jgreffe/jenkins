@@ -239,6 +239,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -2864,11 +2865,25 @@ public class Jenkins extends AbstractCIBase implements DirectlyModifiableTopLeve
             delta = ExtensionComponentSet.union(delta, ef.refresh().filtered());
         }
 
+        LinkedHashSet<ExtensionList> extensionListsToFireChangeListeners = new LinkedHashSet<>();
+        LinkedHashSet<ExtensionList> descriptorListsToFireListeners = new LinkedHashSet<>();
         for (ExtensionList el : extensionLists.values()) {
-            el.refresh(delta);
+            if (el.refresh(delta)) {
+                extensionListsToFireChangeListeners.add(el);
+            }
         }
         for (ExtensionList el : descriptorLists.values()) {
-            el.refresh(delta);
+            if (el.refresh(delta)) {
+                descriptorListsToFireListeners.add(el);
+            }
+        }
+        // Refresh all extension lists before firing any listeners in case the listener would cause any of the new
+        // extensions to be forcibly loaded prior to the refresh, leading to duplicate entries in the list.
+        for (var el : extensionListsToFireChangeListeners) {
+            el.fireOnChangeListeners();
+        }
+        for (var el : descriptorListsToFireListeners) {
+            el.fireOnChangeListeners();
         }
 
         // TODO: we need some generalization here so that extension points can be notified when a refresh happens?

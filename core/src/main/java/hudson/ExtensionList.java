@@ -336,11 +336,11 @@ public class ExtensionList<T> extends AbstractList<T> implements OnMaster {
      * Used during {@link Jenkins#refreshExtensions()} to add new components into existing {@link ExtensionList}s.
      * Do not call from anywhere else.
      */
-    public void refresh(ExtensionComponentSet delta) {
+    public boolean refresh(ExtensionComponentSet delta) {
         boolean fireOnChangeListeners = false;
         synchronized (getLoadLock()) {
             if (extensions == null)
-                return;     // not yet loaded. when we load it, we'll load everything visible by then, so no work needed
+                return false;     // not yet loaded. when we load it, we'll load everything visible by then, so no work needed
 
             Collection<ExtensionComponent<T>> found = load(delta);
             if (!found.isEmpty()) {
@@ -350,12 +350,10 @@ public class ExtensionList<T> extends AbstractList<T> implements OnMaster {
                 fireOnChangeListeners = true;
             }
         }
-        if (fireOnChangeListeners) {
-            fireOnChangeListeners();
-        }
+        return fireOnChangeListeners;
     }
 
-    private void fireOnChangeListeners() {
+    public void fireOnChangeListeners() {
         for (ExtensionListListener listener : listeners) {
             try {
                 listener.onChange();
