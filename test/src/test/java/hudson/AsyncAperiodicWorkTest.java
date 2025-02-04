@@ -3,12 +3,10 @@ package hudson;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
 import org.jvnet.hudson.test.TestExtension;
-import org.jvnet.hudson.test.recipes.WithPlugin;
 
 import hudson.model.AperiodicWork;
 import hudson.model.AsyncAperiodicWork;
@@ -23,7 +21,7 @@ public class AsyncAperiodicWorkTest {
      * Check a plugin containing an Extension with an AsyncAperiodicWork is registered only once
      */
     @Test
-    public void checkDynamicLoad_singleRegistration() throws Throwable {
+    public void check_singleRegistration() throws Throwable {
         ExtensionList.lookupSingleton(CustomExtension.class);
     }
 
