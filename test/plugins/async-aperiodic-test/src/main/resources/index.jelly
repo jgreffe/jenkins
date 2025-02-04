@@ -1,0 +1,4 @@
+<?jelly escape-by-default='true'?>
+<div>
+A simple test plugin using Extension and AsyncAperiodWork
+</div>
